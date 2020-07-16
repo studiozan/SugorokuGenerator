@@ -12,36 +12,36 @@ namespace SugorokuGenerator
 		 */
 		public void Initialize( int seed = 0)
 		{
-			PointTypeList = new List<int>();
-			SugorokuPointList = new List<FieldConnectPoint>();
-			SugorokuDataList = new List<int>();
-			RandomSystem = new System.Random( seed);
+			pointTypeList = new List<int>();
+			sugorokuPointList = new List<FieldConnectPoint>();
+			sugorokuDataList = new List<int>();
+			randomSystem = new System.Random( seed);
 		}
 
 		/**
 		 * すごろくマップの生成
 		 */
-		public void SugorokuMapCreate()
+		public IEnumerator SugorokuMapCreate()
 		{
 			List<FieldConnectPoint> tmp_list = new List<FieldConnectPoint>(), enable_list = new List<FieldConnectPoint>();
 			FieldConnectPoint tmp_point;
 			int idx, count = 0;
 
-			SugorokuPointList.Clear();
-			SugorokuDataList.Clear();
+			sugorokuPointList.Clear();
+			sugorokuDataList.Clear();
 			tmp_point = new FieldConnectPoint();
 			// スタート地点
 			idx = 0;
-			tmp_point.Initialize( PointList[ idx].Position, 0);
+			tmp_point.Initialize( pointList[ idx].Position, 0);
 			tmp_point.Index = idx;
-			PointTypeList[ idx] = 1;
+			pointTypeList[ idx] = 1;
 			tmp_list.Add( tmp_point);
 			enable_list.Add( tmp_point);
-			SugorokuDataList.Add( 0);
+			sugorokuDataList.Add( 0);
 
 			while( enable_list.Count > 0)
 			{
-				PassCreate( PointList, tmp_list, enable_list, PointTypeList, 3);
+				PassCreate( pointList, tmp_list, enable_list, pointTypeList, 3);
 				count++;
 				if( count > 25)
 				{
@@ -49,7 +49,9 @@ namespace SugorokuGenerator
 				}
 			}
 
-			SugorokuPointList = tmp_list;
+			sugorokuPointList = tmp_list;
+
+			yield return 0;
 		}
 		/**
 		 * 候補のリストから通路と部屋を作る処理
@@ -71,7 +73,7 @@ namespace SugorokuGenerator
 
 			if( use_enable_index < 0)
 			{
-				rand = RandomSystem.Next( 0, enable_list.Count);
+				rand = randomSystem.Next( 0, enable_list.Count);
 			}
 			else
 			{
@@ -98,7 +100,7 @@ namespace SugorokuGenerator
 				if( tmp_list.Count > 0)
 				{
 					/*! 通路として繋ぐ */
-					rand = RandomSystem.Next( 0, tmp_list.Count);
+					rand = randomSystem.Next( 0, tmp_list.Count);
 					rand = tmp_list[ rand];
 					tmp_point2 = new FieldConnectPoint();
 					tmp_point2.Initialize( tmp_point.ConnectionList[ rand].Position, 0);
@@ -108,7 +110,7 @@ namespace SugorokuGenerator
 					enable_list[ idx].SetConnection( tmp_point2);
 					enable_list.Add( tmp_point2);
 					save_list.Add( tmp_point2);
-					SugorokuDataList.Add( 0);
+					sugorokuDataList.Add( 0);
 
 					pass_num--;
 					if( pass_num <= 0)
@@ -217,7 +219,7 @@ namespace SugorokuGenerator
 
 			if( flg != false)
 			{
-				SugorokuDataList[ SugorokuDataList.Count - 1] = 1;
+				sugorokuDataList[ sugorokuDataList.Count - 1] = 1;
 				/*! 新しいマス3つを生成する */
 				for( i0 = 0; i0 < 3; i0++)
 				{
@@ -229,7 +231,7 @@ namespace SugorokuGenerator
 					enable_list.Add( field_tbl[ i0]);
 					use_type_list[ field_tbl[ i0].Index] = 1;
 					room_mass_list.Add( field_tbl[ i0]);
-					SugorokuDataList.Add( 1);
+					sugorokuDataList.Add( 1);
 				}
 				/*! 新しく生成したマスを相互に接続する */
 				field_tbl[ 0].SetConnection( center_point);
@@ -290,7 +292,7 @@ namespace SugorokuGenerator
 			}
 
 			/* すごろくマスの生成 */
-			rand = RandomSystem.Next( 0, room_idx_list.Count);
+			rand = randomSystem.Next( 0, room_idx_list.Count);
 			idx = idx_list[ rand];
 			tmp_point2 = room_list[ room_idx_list[ rand]];
 			tmp_point = new FieldConnectPoint();
@@ -301,7 +303,7 @@ namespace SugorokuGenerator
 			enable_list.Add( tmp_point);
 			room_list.Add( tmp_point);
 			save_list.Add( tmp_point);
-			SugorokuDataList.Add( 1);
+			sugorokuDataList.Add( 1);
 			use_type_list[ tmp_point.Index] = 1;
 
 			/* 伸ばしたマスからさらに伸ばした時に、部屋と繋がるマスがあるかどうか調べる */
@@ -322,7 +324,7 @@ namespace SugorokuGenerator
 			{
 				return;
 			}
-			rand = RandomSystem.Next( 0, extend_idx_list.Count);
+			rand = randomSystem.Next( 0, extend_idx_list.Count);
 			tmp_idx = extend_idx_list[ rand];
 			idx = idx_list[ tmp_idx];
 			tmp_point3 = room_list[ room_idx_list[ tmp_idx]];
@@ -336,7 +338,7 @@ namespace SugorokuGenerator
 			enable_list.Add( tmp_point2);
 			room_list.Add( tmp_point2);
 			save_list.Add( tmp_point2);
-			SugorokuDataList.Add( 1);
+			sugorokuDataList.Add( 1);
 			use_type_list[ tmp_point2.Index] = 1;
 		 }
 
@@ -348,12 +350,12 @@ namespace SugorokuGenerator
 		public void SetPointList( List<FieldConnectPoint> list)
 		{
 			int i0;
-			PointList = list;
-			PointTypeList.Clear();
-			for( i0 = 0; i0 < PointList.Count; i0++)
+			pointList = list;
+			pointTypeList.Clear();
+			for( i0 = 0; i0 < pointList.Count; i0++)
 			{
-				PointList[ i0].Index = i0;
-				PointTypeList.Add( 0);
+				pointList[ i0].Index = i0;
+				pointTypeList.Add( 0);
 			}
 		}
 
@@ -363,18 +365,18 @@ namespace SugorokuGenerator
 		 */
 		public List<FieldConnectPoint> GetPointList()
 		{
-			return SugorokuPointList;
+			return sugorokuPointList;
 		}
 
 		public List<int> GetSugorokuDataList()
 		{
-			return SugorokuDataList;
+			return sugorokuDataList;
 		}
 
-		List<FieldConnectPoint> PointList;				/*! 道路の繋がりポイントリスト */
-		List<FieldConnectPoint> SugorokuPointList;		/*! すごろく用ポイントリスト */
-		List<int> SugorokuDataList;			/*! すごろくマスの情報リスト */
-		List<int> PointTypeList;			/*! ポイントの使用状況リスト */
-		System.Random RandomSystem;
+		List<FieldConnectPoint> pointList;				/*! 道路の繋がりポイントリスト */
+		List<FieldConnectPoint> sugorokuPointList;		/*! すごろく用ポイントリスト */
+		List<int> sugorokuDataList;			/*! すごろくマスの情報リスト */
+		List<int> pointTypeList;			/*! ポイントの使用状況リスト */
+		System.Random randomSystem;
 	}
 }
