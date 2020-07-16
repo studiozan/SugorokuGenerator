@@ -6,5 +6,8 @@
   "keywords": [
     "texture"
   ],
-  "description": "Sugoroku Generator"
+  "description": "Sugoroku Generator",
+  "dependencies": {
+    "com.studiozan.fieldgenerator" : "https://github.com/studiozan/FieldGenerator.git"
+  }
 }
