@@ -5,6 +5,7 @@ using FieldGenerator;
 
 namespace SugorokuGenerator
 {
+	[System.Serializable]
 	public class SugorokuMapGenerator
 	{
 		/**
@@ -23,35 +24,33 @@ namespace SugorokuGenerator
 		 */
 		public IEnumerator SugorokuMapCreate()
 		{
-			List<FieldConnectPoint> tmp_list = new List<FieldConnectPoint>(), enable_list = new List<FieldConnectPoint>();
-			FieldConnectPoint tmp_point;
-			int idx, count = 0;
+			List<FieldConnectPoint> candidateList = new List<FieldConnectPoint>();
+			FieldConnectPoint initPoint;
+			int count = 0;
 
 			sugorokuPointList.Clear();
 			sugorokuDataList.Clear();
-			tmp_point = new FieldConnectPoint();
+			initPoint = new FieldConnectPoint();
 			// スタート地点
-			idx = 0;
-			tmp_point.Initialize( pointList[ idx].Position, 0);
-			tmp_point.Index = idx;
-			pointTypeList[ idx] = 1;
-			tmp_list.Add( tmp_point);
-			enable_list.Add( tmp_point);
+			initPoint.Initialize( pointList[ 0].Position, 0);
+			initPoint.Index = 0;
+			pointTypeList[ 0] = 1;
+			sugorokuPointList.Add( initPoint);
+			candidateList.Add( initPoint);
 			sugorokuDataList.Add( 0);
 
-			while( enable_list.Count > 0)
+			/* 候補となるポイントが無くなるか一定回数行う */
+			while( candidateList.Count > 0)
 			{
-				PassCreate( pointList, tmp_list, enable_list, pointTypeList, 3);
-				count++;
+				PassCreate( pointList, sugorokuPointList, candidateList, pointTypeList, 3);
+				++count;
 				if( count > 25)
 				{
-					enable_list.Clear();
+					candidateList.Clear();
 				}
 			}
 
-			sugorokuPointList = tmp_list;
-
-			yield return 0;
+			yield return null;
 		}
 		/**
 		 * 候補のリストから通路と部屋を作る処理
@@ -88,7 +87,7 @@ namespace SugorokuGenerator
 			if( count > 0)
 			{
 				tmp_list.Clear();
-				for( i0 = 0; i0 < tmp_point.ConnectionList.Count; i0++)
+				for( i0 = 0; i0 < tmp_point.ConnectionList.Count; ++i0)
 				{
 					tmp_i = tmp_point.ConnectionList[ i0].Index;
 					if( use_type_list[ tmp_i] == 0)
@@ -112,7 +111,7 @@ namespace SugorokuGenerator
 					save_list.Add( tmp_point2);
 					sugorokuDataList.Add( 0);
 
-					pass_num--;
+					--pass_num;
 					if( pass_num <= 0)
 					{
 						/*! 四角の部屋を作る */
@@ -160,7 +159,7 @@ namespace SugorokuGenerator
 			tmp_point = list[ center_point.Index];
 			room_mass_list.Add( center_point);
 
-			for( i0 = 0; i0 < tmp_point.ConnectionList.Count; i0++)
+			for( i0 = 0; i0 < tmp_point.ConnectionList.Count; ++i0)
 			{
 				tmp_i = tmp_point.ConnectionList[ i0].Index;
 				if( use_type_list[ tmp_i] == 0)
@@ -176,7 +175,7 @@ namespace SugorokuGenerator
 
 			flg = false;
 			/*! 2方向に伸ばして、伸ばした2方向で共通の点がある場合は伸ばす */
-			for( i0 = 0; i0 < tmp_list.Count; i0++)
+			for( i0 = 0; i0 < tmp_list.Count; ++i0)
 			{
 				tmp_point = list[ tmp_list[ i0]];
 				tmp_list2.Clear();
@@ -189,16 +188,16 @@ namespace SugorokuGenerator
 						tmp_list2.Add( tmp_i);
 					}
 				}
-				for( i1 = 0; i1 < tmp_list.Count; i1++)
+				for( i1 = 0; i1 < tmp_list.Count; ++i1)
 				{
 					if( i0 == i1)
 					{
 						continue;
 					}
 					tmp_point2 = list[ tmp_list[ i1]];
-					for( i2 = 0; i2 < tmp_list2.Count; i2++)
+					for( i2 = 0; i2 < tmp_list2.Count; ++i2)
 					{
-						for( i3 = 0; i3 < tmp_point2.ConnectionList.Count; i3++)
+						for( i3 = 0; i3 < tmp_point2.ConnectionList.Count; ++i3)
 						{
 							/* 2方向の伸ばした場所が共通のマスと繋がる場所がある場合（四角の4マスが繋がるような部屋を作る） */
 							if( tmp_list2[ i2] == tmp_point2.ConnectionList[ i3].Index)
@@ -221,7 +220,7 @@ namespace SugorokuGenerator
 			{
 				sugorokuDataList[ sugorokuDataList.Count - 1] = 1;
 				/*! 新しいマス3つを生成する */
-				for( i0 = 0; i0 < 3; i0++)
+				for( i0 = 0; i0 < 3; ++i0)
 				{
 					field_tbl[ i0] = new FieldConnectPoint();
 					no = list_idx_tbl[ i0];
@@ -270,11 +269,11 @@ namespace SugorokuGenerator
 			FieldConnectPoint tmp_point, tmp_point2, tmp_point3;
 			int i0, i1, idx, tmp_idx, rand;
 
-			for( i0 = 0; i0 < room_list.Count; i0++)
+			for( i0 = 0; i0 < room_list.Count; ++i0)
 			{
 				idx = room_list[ i0].Index;
 				tmp_point = list[ idx];
-				for( i1 = 0; i1 < tmp_point.ConnectionList.Count; i1++)
+				for( i1 = 0; i1 < tmp_point.ConnectionList.Count; ++i1)
 				{
 					tmp_idx = tmp_point.ConnectionList[ i1].Index;
 					if( use_type_list[ tmp_idx] == 0)
@@ -307,10 +306,10 @@ namespace SugorokuGenerator
 			use_type_list[ tmp_point.Index] = 1;
 
 			/* 伸ばしたマスからさらに伸ばした時に、部屋と繋がるマスがあるかどうか調べる */
-			for( i0 = 0; i0 < list[ idx].ConnectionList.Count; i0++)
+			for( i0 = 0; i0 < list[ idx].ConnectionList.Count; ++i0)
 			{
 				tmp_idx = list[ idx].ConnectionList[ i0].Index;
-				for( i1 = 0; i1 < idx_list.Count; i1++)
+				for( i1 = 0; i1 < idx_list.Count; ++i1)
 				{
 					if( idx_list[ i1] == tmp_idx)
 					{
@@ -352,7 +351,7 @@ namespace SugorokuGenerator
 			int i0;
 			pointList = list;
 			pointTypeList.Clear();
-			for( i0 = 0; i0 < pointList.Count; i0++)
+			for( i0 = 0; i0 < pointList.Count; ++i0)
 			{
 				pointList[ i0].Index = i0;
 				pointTypeList.Add( 0);
