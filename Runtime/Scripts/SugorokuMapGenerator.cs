@@ -24,13 +24,12 @@ namespace SugorokuGenerator
 		 */
 		public IEnumerator SugorokuMapCreate()
 		{
-			List<FieldConnectPoint> candidateList = new List<FieldConnectPoint>();
-			FieldConnectPoint initPoint;
+			var candidateList = new List<FieldConnectPoint>();
+			var initPoint = new FieldConnectPoint();
 			int count = 0;
 
 			sugorokuPointList.Clear();
 			sugorokuDataList.Clear();
-			initPoint = new FieldConnectPoint();
 			// スタート地点
 			initPoint.Initialize( pointList[ 0].Position, 0);
 			initPoint.Index = 0;
@@ -50,7 +49,7 @@ namespace SugorokuGenerator
 				}
 			}
 
-			yield return null;
+			yield break;
 		}
 		/**
 		 * 候補のリストから通路と部屋を作る処理
@@ -65,25 +64,25 @@ namespace SugorokuGenerator
 		void PassCreate( List<FieldConnectPoint> list, List<FieldConnectPoint> save_list, List<FieldConnectPoint> enable_list, List<int> use_type_list,
 			int pass_num = 1, int use_enable_index = -1)
 		{
-			int i0, idx, rand, count, tmp_i;
+			int i0, index, randomIndex, count, tmp_i;
 			FieldConnectPoint tmp_point, tmp_point2;
-			List<int> tmp_list = new List<int>();
+			var tmp_list = new List<int>();
 			bool flg = false;
 
 			if( use_enable_index < 0)
 			{
-				rand = randomSystem.Next( 0, enable_list.Count);
+				randomIndex = randomSystem.Next( 0, enable_list.Count);
 			}
 			else
 			{
-				rand = use_enable_index;
+				randomIndex = use_enable_index;
 			}
-			idx = enable_list[ rand].Index;
-			tmp_point = list[ idx];
-			idx = rand;
+			index = enable_list[ randomIndex].Index;
+			tmp_point = list[ index];
+			index = randomIndex;
 			
 			/*! 残りの接続数がいくつか調べる */
-			count = tmp_point.ConnectionList.Count - enable_list[ idx].ConnectionList.Count;
+			count = tmp_point.ConnectionList.Count - enable_list[ index].ConnectionList.Count;
 			if( count > 0)
 			{
 				tmp_list.Clear();
@@ -99,14 +98,14 @@ namespace SugorokuGenerator
 				if( tmp_list.Count > 0)
 				{
 					/*! 通路として繋ぐ */
-					rand = randomSystem.Next( 0, tmp_list.Count);
-					rand = tmp_list[ rand];
+					randomIndex = randomSystem.Next( 0, tmp_list.Count);
+					randomIndex = tmp_list[ randomIndex];
 					tmp_point2 = new FieldConnectPoint();
-					tmp_point2.Initialize( tmp_point.ConnectionList[ rand].Position, 0);
-					tmp_point2.Index = tmp_point.ConnectionList[ rand].Index;
+					tmp_point2.Initialize( tmp_point.ConnectionList[ randomIndex].Position, 0);
+					tmp_point2.Index = tmp_point.ConnectionList[ randomIndex].Index;
 					use_type_list[ tmp_point2.Index] = 1;
-					tmp_point2.SetConnection( enable_list[ idx]);
-					enable_list[ idx].SetConnection( tmp_point2);
+					tmp_point2.SetConnection( enable_list[ index]);
+					enable_list[ index].SetConnection( tmp_point2);
 					enable_list.Add( tmp_point2);
 					save_list.Add( tmp_point2);
 					sugorokuDataList.Add( 0);
@@ -129,7 +128,7 @@ namespace SugorokuGenerator
 			
 			if( flg == false)
 			{
-				enable_list.RemoveAt( idx);
+				enable_list.RemoveAt( index);
 			}
 		}
 
@@ -147,13 +146,14 @@ namespace SugorokuGenerator
 			int room_extend_num = 0)
 		{
 			FieldConnectPoint center_point, tmp_point, tmp_point2;
-			List<FieldConnectPoint> room_mass_list = new List<FieldConnectPoint>();
-			List<int> tmp_list = new List<int>(), tmp_list2 = new List<int>();
+			var room_mass_list = new List<FieldConnectPoint>();
+			var tmp_list = new List<int>();
+			var tmp_list2 = new List<int>();
 			int i0, i1, i2, i3, tmp_i, no;
 			bool flg;
 
-			int[] list_idx_tbl = new int[ 3];
-			FieldConnectPoint[] field_tbl = new FieldConnectPoint[ 3];
+			var list_idx_tbl = new int[ 3];
+			var field_tbl = new FieldConnectPoint[ 3];
 
 			center_point = save_list[ save_idx];
 			tmp_point = list[ center_point.Index];
@@ -263,9 +263,9 @@ namespace SugorokuGenerator
 		 void ExtendRoom( List<FieldConnectPoint> list, List<FieldConnectPoint> save_list, List<FieldConnectPoint> enable_list,
 		 		List<FieldConnectPoint> room_list, List<int> use_type_list)
 		 {
-			List<int> idx_list = new List<int>();		// 拡張候補のマスのインデックス
-			List<int> room_idx_list = new List<int>();	// 拡張候補のマスがどの部屋からなのかのインデックス
-			List<int> extend_idx_list = new List<int>();	// さらに拡張する際の候補となるidx_listのインデックス
+			var idx_list = new List<int>();		// 拡張候補のマスのインデックス
+			var room_idx_list = new List<int>();	// 拡張候補のマスがどの部屋からなのかのインデックス
+			var extend_idx_list = new List<int>();	// さらに拡張する際の候補となるidx_listのインデックス
 			FieldConnectPoint tmp_point, tmp_point2, tmp_point3;
 			int i0, i1, idx, tmp_idx, rand;
 
