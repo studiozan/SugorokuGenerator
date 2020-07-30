@@ -28,12 +28,15 @@ namespace SugorokuGenerator
 			var initPoint = new FieldConnectPoint();
 			int count = 0;
 
+			//int index = GetCenterPositionIndex();
+			int index = 0;
+
 			sugorokuPointList.Clear();
 			sugorokuDataList.Clear();
 			// スタート地点
-			initPoint.Initialize( pointList[ 0].Position, 0);
-			initPoint.Index = 0;
-			pointTypeList[ 0] = 1;
+			initPoint.Initialize( pointList[ index].Position, 0);
+			initPoint.Index = index;
+			pointTypeList[ index] = 1;
 			sugorokuPointList.Add( initPoint);
 			candidateList.Add( initPoint);
 			sugorokuDataList.Add( 0);
@@ -50,6 +53,58 @@ namespace SugorokuGenerator
 			}
 
 			yield break;
+		}
+		/**
+		 * マップの中心に近い点のインデックスを返す
+		 */
+		int GetCenterPositionIndex()
+		{
+			int result = 0;
+			var minVector = new Vector3(100000f, 0f, 100000f);
+			var maxVector = new Vector3(-100000f, 0f, -100000f);
+			int i0;
+
+			for( i0 = 0; i0 < pointList.Count; ++i0)
+			{
+				if( pointList[ i0].Position.x < -100000f || pointList[ i0].Position.x > 100000f ||
+					pointList[ i0].Position.z < -100000f || pointList[ i0].Position.z > 100000f)
+				{
+					continue;
+				}
+				if( minVector.x > pointList[ i0].Position.x)
+				{
+					minVector.x = pointList[ i0].Position.x;
+				}
+				else if( maxVector.x < pointList[ i0].Position.x)
+				{
+					maxVector.x = pointList[ i0].Position.x;
+				}
+				if( minVector.z > pointList[ i0].Position.z)
+				{
+					minVector.z = pointList[ i0].Position.z;
+				}
+				else if( maxVector.z < pointList[ i0].Position.z)
+				{
+					maxVector.z = pointList[ i0].Position.z;
+				}
+			}
+
+			var centerVector = ( maxVector + minVector) * 0.5f;
+			float minLength = float.MaxValue;
+			float length;
+			Vector3 subVector;
+			for( i0 = 0; i0 < pointList.Count; ++i0)
+			{
+				subVector = centerVector - pointList[ i0].Position;
+				length = subVector.x * subVector.x + subVector.z * subVector.z;
+				if( minLength > length)
+				{
+					minLength = length;
+					result = i0;
+				}
+			}
+
+			return result;
 		}
 		/**
 		 * 候補のリストから通路と部屋を作る処理
