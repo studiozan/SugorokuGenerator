@@ -427,6 +427,57 @@ namespace SugorokuGenerator
 			return sugorokuDataList;
 		}
 
+		public SugorokuSerializedData GetSerializedData()
+		{
+			int i0, i1;
+			var dataList = new List<SugorokuPointData>();
+			var serializedData = new SugorokuSerializedData();
+
+			for( i0 = 0; i0 < sugorokuPointList.Count; ++i0)
+			{
+				var data = new SugorokuPointData();
+				data.SetPosition( sugorokuPointList[ i0].Position);
+				data.SetRoomType( sugorokuDataList[ i0]);
+				data.SetIndex( sugorokuPointList[ i0].Index);
+				var indexList = new List<int>();
+				for( i1 = 0; i1 < sugorokuPointList[ i0].ConnectionList.Count; ++i1)
+				{
+					indexList.Add( sugorokuPointList[ i0].ConnectionList[ i1].Index);
+				}
+				data.SetConnectionIndexList( indexList);
+				dataList.Add( data);
+			}
+			serializedData.SetPointDataList( dataList);
+
+			return serializedData;
+		}
+		public void SetSerializedData( SugorokuSerializedData data)
+		{
+			int i0, i1;
+			List<SugorokuPointData> dataList = data.GetPointDataList();
+
+			sugorokuPointList.Clear();
+			sugorokuDataList.Clear();
+
+			for( i0 = 0; i0 < dataList.Count; ++i0)
+			{
+				var point = new FieldConnectPoint();
+				point.Initialize( dataList[ i0].GetPosition(), PointType.kGridRoad);
+				point.Index = dataList[ i0].GetIndex();
+				sugorokuDataList.Add( dataList[ i0].GetRoomType());
+				sugorokuPointList.Add( point);
+			}
+			for( i0 = 0; i0 < dataList.Count; ++i0)
+			{
+				var indexList = dataList[ i0].GetConnectionIndexList();
+				for( i1 = 0; i1 < indexList.Count; ++i1)
+				{
+					sugorokuPointList[ i0].SetConnection( sugorokuPointList[ indexList[ i1]]);
+				}
+			}
+
+		}
+
 		List<FieldConnectPoint> pointList;				/*! 道路の繋がりポイントリスト */
 		List<FieldConnectPoint> sugorokuPointList;		/*! すごろく用ポイントリスト */
 		List<int> sugorokuDataList;			/*! すごろくマスの情報リスト */
