@@ -427,6 +427,11 @@ namespace SugorokuGenerator
 			return sugorokuDataList;
 		}
 
+		public List<FieldConnectPoint> GetRoadPointList()
+		{
+			return pointList;
+		}
+
 		public SugorokuSerializedData GetSerializedData()
 		{
 			int i0, i1;
@@ -475,7 +480,6 @@ namespace SugorokuGenerator
 					sugorokuPointList[ i0].SetConnection( sugorokuPointList[ indexList[ i1]]);
 				}
 			}
-
 		}
 
 		List<FieldConnectPoint> pointList;				/*! 道路の繋がりポイントリスト */
