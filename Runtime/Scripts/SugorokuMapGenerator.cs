@@ -480,6 +480,9 @@ namespace SugorokuGenerator
 					sugorokuPointList[ i0].SetConnection( sugorokuPointList[ indexList[ i1]]);
 				}
 			}
+
+			pointList.Clear();
+			pointList.AddRange( sugorokuPointList);
 		}
 
 		List<FieldConnectPoint> pointList;				/*! 道路の繋がりポイントリスト */
