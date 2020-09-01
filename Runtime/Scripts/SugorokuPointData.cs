@@ -17,6 +17,7 @@ namespace SugorokuGenerator
 			return position;
 		}
 
+		/* 部屋かどうかの情報 */
 		public void SetRoomType( int type)
 		{
 			roomType = type;
@@ -44,6 +45,16 @@ namespace SugorokuGenerator
 			return connectionIndexList;
 		}
 
+		/* マスの種類 */
+		public void SetMassType( int type)
+		{
+			massType = type;
+		}
+		public int GetMassType()
+		{
+			return massType;
+		}
+
 		[SerializeField]
 		Vector3 position;
 		[SerializeField]
@@ -52,5 +63,7 @@ namespace SugorokuGenerator
 		int index;
 		[SerializeField]
 		List<int> connectionIndexList;
+		[SerializeField]
+		int massType;
 	}
 }

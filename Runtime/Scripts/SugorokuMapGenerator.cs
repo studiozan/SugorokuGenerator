@@ -481,6 +481,10 @@ namespace SugorokuGenerator
 				}
 			}
 
+			if( pointList == null)
+			{
+				pointList = new List<FieldConnectPoint>();
+			}
 			pointList.Clear();
 			pointList.AddRange( sugorokuPointList);
 		}
