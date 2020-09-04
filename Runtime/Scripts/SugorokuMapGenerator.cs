@@ -17,6 +17,8 @@ namespace SugorokuGenerator
 			sugorokuPointList = new List<FieldConnectPoint>();
 			sugorokuDataList = new List<int>();
 			randomSystem = new System.Random( seed);
+			startIndex = 0;
+			goalIndex = -1;
 		}
 
 		/**
@@ -30,6 +32,7 @@ namespace SugorokuGenerator
 
 			//int index = GetCenterPositionIndex();
 			int index = 0;
+			startIndex = index;
 
 			sugorokuPointList.Clear();
 			sugorokuDataList.Clear();
@@ -454,6 +457,9 @@ namespace SugorokuGenerator
 			}
 			serializedData.SetPointDataList( dataList);
 
+			serializedData.SetStartIndex( startIndex);
+			serializedData.SetGoalIndex( goalIndex);
+
 			return serializedData;
 		}
 		public void SetSerializedData( SugorokuSerializedData data)
@@ -481,6 +487,9 @@ namespace SugorokuGenerator
 				}
 			}
 
+			startIndex = data.GetStartIndex();
+			goalIndex = data.GetGoalIndex();
+
 			if( pointList == null)
 			{
 				pointList = new List<FieldConnectPoint>();
@@ -493,6 +502,8 @@ namespace SugorokuGenerator
 		List<FieldConnectPoint> sugorokuPointList;		/*! すごろく用ポイントリスト */
 		List<int> sugorokuDataList;			/*! すごろくマスの情報リスト */
 		List<int> pointTypeList;			/*! ポイントの使用状況リスト */
+		int startIndex;
+		int goalIndex;
 		System.Random randomSystem;
 	}
 }

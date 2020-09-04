@@ -26,10 +26,30 @@ namespace SugorokuGenerator
 		{
 			return pointDataList;
 		}
+		public void SetStartIndex( int index)
+		{
+			startIndex = index;
+		}
+		public int GetStartIndex()
+		{
+			return startIndex;
+		}
+		public void SetGoalIndex( int index)
+		{
+			goalIndex = index;
+		}
+		public int GetGoalIndex()
+		{
+			return goalIndex;
+		}
 
 		[SerializeField]
 		int seedValue;
 		[SerializeField]
 		List<SugorokuPointData> pointDataList;
+		[SerializeField]
+		int startIndex;
+		[SerializeField]
+		int goalIndex;
 	}
 }
