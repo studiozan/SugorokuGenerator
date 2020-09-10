@@ -54,6 +54,15 @@ namespace SugorokuGenerator
 		{
 			return massType;
 		}
+		/* マスの固有パラメータ */
+		public void SetMassParam( float param)
+		{
+			massParam = param;
+		}
+		public float GetMassParam()
+		{
+			return massParam;
+		}
 
 		[SerializeField]
 		Vector3 position;
@@ -65,5 +74,7 @@ namespace SugorokuGenerator
 		List<int> connectionIndexList;
 		[SerializeField]
 		int massType;
+		[SerializeField]
+		float massParam;
 	}
 }

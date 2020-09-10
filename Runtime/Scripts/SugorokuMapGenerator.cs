@@ -55,6 +55,24 @@ namespace SugorokuGenerator
 				}
 			}
 
+			sugorokuPointDataList = new List<SugorokuPointData>();
+			for( int i0 = 0; i0 < sugorokuPointList.Count; ++i0)
+			{
+				var data = new SugorokuPointData();
+				data.SetPosition( sugorokuPointList[ i0].Position);
+				data.SetRoomType( sugorokuDataList[ i0]);
+				data.SetIndex( sugorokuPointList[ i0].Index);
+				var indexList = new List<int>();
+				for( int i1 = 0; i1 < sugorokuPointList[ i0].ConnectionList.Count; ++i1)
+				{
+					indexList.Add( sugorokuPointList[ i0].ConnectionList[ i1].Index);
+				}
+				data.SetConnectionIndexList( indexList);
+				data.SetMassType( 0);
+				data.SetMassParam( 0f);
+				sugorokuPointDataList.Add( data);
+			}
+
 			yield break;
 		}
 		/**
@@ -459,28 +477,29 @@ namespace SugorokuGenerator
 
 			serializedData.SetStartIndex( startIndex);
 			serializedData.SetGoalIndex( goalIndex);
+			sugorokuPointDataList.AddRange( dataList);
 
 			return serializedData;
 		}
 		public void SetSerializedData( SugorokuSerializedData data)
 		{
 			int i0, i1;
-			List<SugorokuPointData> dataList = data.GetPointDataList();
+			sugorokuPointDataList = data.GetPointDataList();
 
 			sugorokuPointList.Clear();
 			sugorokuDataList.Clear();
 
-			for( i0 = 0; i0 < dataList.Count; ++i0)
+			for( i0 = 0; i0 < sugorokuPointDataList.Count; ++i0)
 			{
 				var point = new FieldConnectPoint();
-				point.Initialize( dataList[ i0].GetPosition(), PointType.kGridRoad);
-				point.Index = dataList[ i0].GetIndex();
-				sugorokuDataList.Add( dataList[ i0].GetRoomType());
+				point.Initialize( sugorokuPointDataList[ i0].GetPosition(), PointType.kGridRoad);
+				point.Index = sugorokuPointDataList[ i0].GetIndex();
+				sugorokuDataList.Add( sugorokuPointDataList[ i0].GetRoomType());
 				sugorokuPointList.Add( point);
 			}
-			for( i0 = 0; i0 < dataList.Count; ++i0)
+			for( i0 = 0; i0 < sugorokuPointDataList.Count; ++i0)
 			{
-				var indexList = dataList[ i0].GetConnectionIndexList();
+				var indexList = sugorokuPointDataList[ i0].GetConnectionIndexList();
 				for( i1 = 0; i1 < indexList.Count; ++i1)
 				{
 					sugorokuPointList[ i0].SetConnection( sugorokuPointList[ indexList[ i1]]);
@@ -498,8 +517,14 @@ namespace SugorokuGenerator
 			pointList.AddRange( sugorokuPointList);
 		}
 
+		public List<SugorokuPointData> GetSugorokuPointDataList()
+		{
+			return sugorokuPointDataList;
+		}
+
 		List<FieldConnectPoint> pointList;				/*! 道路の繋がりポイントリスト */
-		List<FieldConnectPoint> sugorokuPointList;		/*! すごろく用ポイントリスト */
+		List<FieldConnectPoint> sugorokuPointList;		/*! すごろく用繋がりポイントリスト */
+		List<SugorokuPointData> sugorokuPointDataList;	/*! すごろくのデータリスト */
 		List<int> sugorokuDataList;			/*! すごろくマスの情報リスト */
 		List<int> pointTypeList;			/*! ポイントの使用状況リスト */
 		int startIndex;
