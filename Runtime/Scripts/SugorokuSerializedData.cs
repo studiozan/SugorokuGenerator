@@ -42,6 +42,14 @@ namespace SugorokuGenerator
 		{
 			return goalIndex;
 		}
+		public void SetBiomeType( int type)
+		{
+			biomeType = type;
+		}
+		public int GetBiomeType()
+		{
+			return biomeType;
+		}
 
 		[SerializeField]
 		int seedValue;
@@ -51,5 +59,7 @@ namespace SugorokuGenerator
 		int startIndex;
 		[SerializeField]
 		int goalIndex;
+		[SerializeField]
+		int biomeType;
 	}
 }
