@@ -42,11 +42,11 @@ namespace SugorokuGenerator
 		{
 			return goalIndex;
 		}
-		public void SetBiomeType( int type)
+		public void SetBiomeType( string type)
 		{
 			biomeType = type;
 		}
-		public int GetBiomeType()
+		public string GetBiomeType()
 		{
 			return biomeType;
 		}
@@ -60,6 +60,6 @@ namespace SugorokuGenerator
 		[SerializeField]
 		int goalIndex;
 		[SerializeField]
-		int biomeType;
+		string biomeType;
 	}
 }
