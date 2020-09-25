@@ -12,35 +12,35 @@ namespace SugorokuGenerator
 		{
 			random = new System.Random(seed);
 			allPoints = new List<FieldConnectPoint>();
+			usedList = new List<bool>();
 			sugorokuPoints = new List<FieldConnectPoint>();
 			masuTypes = new List<int>();
 			pointDataList = new List<SugorokuPointData>();
-			usedList = new List<bool>();
+			extendablePoints = new List<FieldConnectPoint>();
 			startIndex = 0;
 		}
 
 		public IEnumerator SugorokuMapCreate(int maxNumSugorokuPoints)
 		{
-			Debug.Log("SugorokuMapCreate()");
 			lastInterruptionTime = System.DateTime.Now;
 
 			sugorokuPoints.Clear();
 			masuTypes.Clear();
 			pointDataList.Clear();
+			extendablePoints.Clear();
 
 			var startPoint = new FieldConnectPoint();
 			startPoint.Initialize(allPoints[startIndex].Position, 0);
 			startPoint.Index = startIndex;
 
-			var extendablePoints = new List<FieldConnectPoint>();
 			extendablePoints.Add(startPoint);
 			sugorokuPoints.Add(startPoint);
 			masuTypes.Add(0);
 			usedList[startIndex] = true;
 
-			while (sugorokuPoints.Count < 16)
+			while (sugorokuPoints.Count < maxNumSugorokuPoints)
 			{
-				yield return CoroutineUtility.CoroutineCycle(GenerateSugorokuMapRecursive(extendablePoints, 3, 0));
+				yield return CoroutineUtility.CoroutineCycle(GenerateAisles(3));
 			}
 
 			for (int i0 = 0; i0 < sugorokuPoints.Count; ++i0)
@@ -60,63 +60,55 @@ namespace SugorokuGenerator
 				data.SetMassParam(0f);
 				pointDataList.Add(data);
 			}
-
-			Debug.Log("Completed");
 		}
 
-		IEnumerator GenerateSugorokuMapRecursive(List<FieldConnectPoint> extendablePoints, int numAisles, int index = -1)
+		IEnumerator GenerateAisles(int numAisles)
 		{
-			Debug.Log($"GenerateSugorokuMapRecursive():{sugorokuPoints.Count}");
-			int extendingIndex = index < 0 ? random.Next(extendablePoints.Count) : index;
-			FieldConnectPoint extendablePoint = extendablePoints[extendingIndex];
-			FieldConnectPoint point = allPoints[extendablePoint.Index];
+			int index = random.Next(extendablePoints.Count);
 
-			List<FieldConnectPoint> connectedPoints = point.ConnectionList;
-			if (connectedPoints.Count - extendablePoint.ConnectionList.Count > 0)
+			for (int i0 = 0; i0 < numAisles; ++i0)
 			{
-				var candidates = new List<FieldConnectPoint>();
-				for (int i0 = 0; i0 < connectedPoints.Count; ++i0)
+				FieldConnectPoint extendablePoint = extendablePoints[index];
+				FieldConnectPoint point = allPoints[extendablePoint.Index];
+				List<FieldConnectPoint> connectedPoints = point.ConnectionList;
+				if (connectedPoints.Count - extendablePoint.ConnectionList.Count > 0)
 				{
-					FieldConnectPoint connectedPoint = connectedPoints[i0];
-					if (usedList[connectedPoint.Index] == false)
+					var candidates = new List<FieldConnectPoint>();
+					for (int i1 = 0; i1 < connectedPoints.Count; ++i1)
 					{
-						candidates.Add(connectedPoint);
+						FieldConnectPoint connectedPoint = connectedPoints[i1];
+						if (usedList[connectedPoint.Index] == false)
+						{
+							candidates.Add(connectedPoint);
+						}
+					}
+
+					if (candidates.Count > 0)
+					{
+						FieldConnectPoint nextPointSrc = candidates[random.Next(candidates.Count)];
+						var sugorokuPoint = new FieldConnectPoint();
+						sugorokuPoint.Initialize(nextPointSrc.Position, 0);
+						sugorokuPoint.Index = nextPointSrc.Index;
+						ConnectPoints(extendablePoint, sugorokuPoint);
+						AddSugorokuPoint(sugorokuPoint, 0);
+
+						index = extendablePoints.Count - 1;
 					}
 				}
 
-				if (candidates.Count > 0)
+				if (ShouldInterrupt() != false)
 				{
-					FieldConnectPoint nextPointSrc = candidates[random.Next(candidates.Count)];
-					var sugorokuPoint = new FieldConnectPoint();
-					sugorokuPoint.Initialize(nextPointSrc.Position, 0);
-					sugorokuPoint.Index = nextPointSrc.Index;
-					ConnectPoints(extendablePoint, sugorokuPoint);
-					AddSugorokuPoint(extendablePoints, extendablePoint, sugorokuPoint, 0);
-
-					if (ShouldInterrupt() != false)
-					{
-						yield return null;
-						lastInterruptionTime = System.DateTime.Now;
-					}
-
-					--numAisles;
-					if (numAisles <= 0)
-					{
-						GenerateRoom(extendablePoints, extendablePoints.Count - 1);
-					}
-					else
-					{
-						yield return CoroutineUtility.CoroutineCycle(GenerateSugorokuMapRecursive(extendablePoints, numAisles, extendablePoints.Count - 1));
-					}
-
-					extendablePoints.RemoveAt(extendingIndex);
+					yield return null;
+					lastInterruptionTime = System.DateTime.Now;
 				}
 			}
+
+			GenerateRoom(index);
 		}
 
-		void GenerateRoom(List<FieldConnectPoint> extendablePoints, int basePointIndex/* , int numRoomPoints */)
+		void GenerateRoom(int basePointIndex, int roomSize = 3)
 		{
-			Debug.Log("GenerateRoom()");
+			int size = Mathf.Max(roomSize, 3);
 			var roomPoints = new List<FieldConnectPoint>();
 			FieldConnectPoint basePoint = extendablePoints[basePointIndex];
 			roomPoints.Add(basePoint);
@@ -154,17 +146,22 @@ namespace SugorokuGenerator
 								sugorokuPoint.Initialize(nextPointSrc.Position, 0);
 								sugorokuPoint.Index = nextPointSrc.Index;
 								ConnectPoints(basePoint, sugorokuPoint);
-								AddSugorokuPoint(extendablePoints, basePoint, sugorokuPoint, 1);
+								AddSugorokuPoint(sugorokuPoint, 1);
 								roomPoints.Add(sugorokuPoint);
 
 								var sugorokuPoint2 = new FieldConnectPoint();
 								sugorokuPoint2.Initialize(connectedPoint.Position, 0);
 								sugorokuPoint2.Index = connectedPoint.Index;
 								ConnectPoints(basePoint, sugorokuPoint2);
-								AddSugorokuPoint(extendablePoints, basePoint, sugorokuPoint2, 1);
+								AddSugorokuPoint(sugorokuPoint2, 1);
 								roomPoints.Add(sugorokuPoint2);
 
 								ConnectPoints(sugorokuPoint, sugorokuPoint2);
+
+								int baseSugorokPointIndex = sugorokuPoints.FindIndex(point => point.Index == basePoint.Index);
+								masuTypes[baseSugorokPointIndex] = 1;
+
+								extendablePoints.RemoveAt(basePointIndex);
 
 								foundCommonPoint = true;
 								break;
@@ -188,11 +185,11 @@ namespace SugorokuGenerator
 			point2.SetConnection(point1);
 		}
 
-		void AddSugorokuPoint(List<FieldConnectPoint> extendablePoints, FieldConnectPoint sugorokuPoint, FieldConnectPoint sugorokuPoint2, int masuType)
+		void AddSugorokuPoint(FieldConnectPoint sugorokuPoint, int masuType)
 		{
-			usedList[sugorokuPoint2.Index] = true;
-			extendablePoints.Add(sugorokuPoint2);
-			sugorokuPoints.Add(sugorokuPoint2);
+			usedList[sugorokuPoint.Index] = true;
+			extendablePoints.Add(sugorokuPoint);
+			sugorokuPoints.Add(sugorokuPoint);
 			masuTypes.Add(masuType);
 		}
 
@@ -244,10 +241,11 @@ namespace SugorokuGenerator
 		System.DateTime lastInterruptionTime;
 		System.Random random;
 		List<FieldConnectPoint> allPoints;
+		List<bool> usedList;
 		List<FieldConnectPoint> sugorokuPoints;
 		List<int> masuTypes;
 		List<SugorokuPointData> pointDataList;
-		List<bool> usedList;
+		List<FieldConnectPoint> extendablePoints;
 		int startIndex;
 	}
 }
