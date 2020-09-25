@@ -63,6 +63,24 @@ namespace SugorokuGenerator
 		{
 			return massParam;
 		}
+		/* マスの使用回数 */
+		public void SetMassUseNumber( int number)
+		{
+			massUseNumber = number;
+		}
+		public int GetMassUseNumber()
+		{
+			return massUseNumber;
+		}
+		/* マスの効果 */
+		public void SetMassEffect( string effect)
+		{
+			massEffect = effect;
+		}
+		public string GetMassEffect()
+		{
+			return massEffect;
+		}
 
 		[SerializeField]
 		Vector3 position;
@@ -76,5 +94,9 @@ namespace SugorokuGenerator
 		int massType;
 		[SerializeField]
 		float massParam;
+		[SerializeField]
+		int massUseNumber;
+		[SerializeField]
+		string massEffect;
 	}
 }
