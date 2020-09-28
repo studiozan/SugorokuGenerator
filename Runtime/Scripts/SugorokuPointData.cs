@@ -81,6 +81,15 @@ namespace SugorokuGenerator
 		{
 			return massEffect;
 		}
+		/* 敵のID */
+		public void SetEnemyKomaId( int id)
+		{
+			enemyKomaId = id;
+		}
+		public int GetEnemyKomaId()
+		{
+			return enemyKomaId;
+		}
 
 		[SerializeField]
 		Vector3 position;
@@ -98,5 +107,7 @@ namespace SugorokuGenerator
 		int massUseNumber;
 		[SerializeField]
 		string massEffect;
+		[SerializeField]
+		int enemyKomaId;
 	}
 }
