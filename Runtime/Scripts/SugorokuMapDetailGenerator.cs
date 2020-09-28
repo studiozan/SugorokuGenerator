@@ -6,7 +6,7 @@ using FieldGenerator;
 namespace SugorokuGenerator
 {
 	[System.Serializable]
-	public class SugorokuMapGenerator2
+	public class SugorokuMapDetailGenerator
 	{
 		public void Initialize(int seed = 0)
 		{
