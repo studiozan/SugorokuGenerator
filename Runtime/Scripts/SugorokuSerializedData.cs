@@ -50,6 +50,14 @@ namespace SugorokuGenerator
 		{
 			return biomeType;
 		}
+		public void SetMapHide( bool flag)
+		{
+			mapHideFlag = flag;
+		}
+		public bool GetMapHide()
+		{
+			return mapHideFlag;
+		}
 
 		[SerializeField]
 		int seedValue;
@@ -61,5 +69,7 @@ namespace SugorokuGenerator
 		int goalIndex;
 		[SerializeField]
 		string biomeType;
+		[SerializeField]
+		bool mapHideFlag;
 	}
 }

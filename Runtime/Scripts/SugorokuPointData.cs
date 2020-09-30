@@ -82,11 +82,11 @@ namespace SugorokuGenerator
 			return massEffect;
 		}
 		/* 敵のID */
-		public void SetEnemyKomaId( int id)
+		public void SetEnemyId( int id)
 		{
 			enemyKomaId = id;
 		}
-		public int GetEnemyKomaId()
+		public int GetEnemyId()
 		{
 			return enemyKomaId;
 		}
