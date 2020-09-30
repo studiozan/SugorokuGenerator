@@ -41,13 +41,15 @@ namespace SugorokuGenerator
 			masuTypes.Add(0);
 			usedList[startIndex] = true;
 
-			int sugorokuSize = parameter.sugorokuSize;
+			int sugorokuSize = Mathf.Min(parameter.sugorokuSize, allPoints.Count);
 			int minAisleSize = parameter.minAisleSize;
 			int maxAisleSize = parameter.maxAisleSize;
-			while (sugorokuPoints.Count < sugorokuSize)
+			int count = 0;
+			while (sugorokuPoints.Count < sugorokuSize && count < sugorokuSize)
 			{
 				int aisleSize = random.Next(minAisleSize, maxAisleSize + 1);
 				yield return CoroutineUtility.CoroutineCycle(GenerateAisles(aisleSize));
+				++count;
 			}
 
 			for (int i0 = 0; i0 < sugorokuPoints.Count; ++i0)
