@@ -48,8 +48,13 @@ namespace SugorokuGenerator
 			while (sugorokuPoints.Count < sugorokuSize && count < sugorokuSize)
 			{
 				int aisleSize = random.Next(minAisleSize, maxAisleSize + 1);
-				yield return CoroutineUtility.CoroutineCycle(GenerateAisles(aisleSize));
+				GenerateAisles(aisleSize);
 				++count;
+				if (ShouldInterrupt() != false)
+				{
+					yield return null;
+					lastInterruptionTime = System.DateTime.Now;
+				}
 			}
 
 			for (int i0 = 0; i0 < sugorokuPoints.Count; ++i0)
@@ -71,7 +76,7 @@ namespace SugorokuGenerator
 			}
 		}
 
-		IEnumerator GenerateAisles(int aisleSize)
+		void GenerateAisles(int aisleSize)
 		{
 			int index = random.Next(extendablePoints.Count);
 
@@ -103,12 +108,6 @@ namespace SugorokuGenerator
 
 						index = extendablePoints.Count - 1;
 					}
-				}
-
-				if (ShouldInterrupt() != false)
-				{
-					yield return null;
-					lastInterruptionTime = System.DateTime.Now;
 				}
 			}
 
