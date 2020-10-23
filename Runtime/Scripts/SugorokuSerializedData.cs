@@ -71,5 +71,15 @@ namespace SugorokuGenerator
 		string biomeType;
 		[SerializeField]
 		bool mapHideFlag;
+		[SerializeField]
+		public int lastTurn;
+		[SerializeField]
+		public string lastTurnEffect;
+		[SerializeField]
+		public int lastTurnParameter1;
+		[SerializeField]
+		public int lastTurnParameter2;
+		[SerializeField]
+		public int lastTurnParameter3;
 	}
 }
