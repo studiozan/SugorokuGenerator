@@ -90,6 +90,14 @@ namespace SugorokuGenerator
 		{
 			return enemyKomaId;
 		}
+		public void SetEnemyKeys( string[] keys)
+		{
+			enemyKeys = keys;
+		}
+		public string[] GetEnemyKeys()
+		{
+			return enemyKeys;
+		}
 
 		[SerializeField]
 		Vector3 position;
@@ -109,5 +117,7 @@ namespace SugorokuGenerator
 		string massEffect;
 		[SerializeField]
 		int enemyKomaId;
+		[SerializeField]
+		string[] enemyKeys;
 	}
 }
