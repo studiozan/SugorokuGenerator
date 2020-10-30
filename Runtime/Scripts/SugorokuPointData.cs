@@ -81,15 +81,7 @@ namespace SugorokuGenerator
 		{
 			return massEffect;
 		}
-		/* 敵のID */
-		public void SetEnemyId( int id)
-		{
-			enemyKomaId = id;
-		}
-		public int GetEnemyId()
-		{
-			return enemyKomaId;
-		}
+		/* 敵のキーテーブル */
 		public void SetEnemyKeys( string[] keys)
 		{
 			enemyKeys = keys;
@@ -97,6 +89,33 @@ namespace SugorokuGenerator
 		public string[] GetEnemyKeys()
 		{
 			return enemyKeys;
+		}
+		/* アイテムのキーテーブル */
+		public void SetItemKeys( string[] keys)
+		{
+			itemKeys = keys;
+		}
+		public string[] GetItemKeys()
+		{
+			return itemKeys;
+		}
+		/* アイテムの個数テーブル */
+		public void SetItemCounts( long[] counts)
+		{
+			itemCounts = counts;
+		}
+		public long[] GetItemCounts()
+		{
+			return itemCounts;
+		}
+		/* アイテムの入手確率 */
+		public void SetItemProbabilitys( float[] probabilitys)
+		{
+			itemProbabilitys = probabilitys;
+		}
+		public float[] GetItemProbabilitys()
+		{
+			return itemProbabilitys;
 		}
 
 		[SerializeField]
@@ -116,8 +135,12 @@ namespace SugorokuGenerator
 		[SerializeField]
 		string massEffect;
 		[SerializeField]
-		int enemyKomaId;
-		[SerializeField]
 		string[] enemyKeys;
+		[SerializeField]
+		string[] itemKeys;
+		[SerializeField]
+		long[] itemCounts;
+		[SerializeField]
+		float[] itemProbabilitys;
 	}
 }
