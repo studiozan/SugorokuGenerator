@@ -55,13 +55,18 @@ namespace SugorokuGenerator
 			return massType;
 		}
 		/* マスの固有パラメータ */
-		public void SetMassParam( float param)
+		public void SetMassParam( int param1, int param2)
 		{
-			massParam = param;
+			massParam1 = param1;
+			massParam2 = param2;
 		}
-		public float GetMassParam()
+		public int GetMassParam1()
 		{
-			return massParam;
+			return massParam1;
+		}
+		public int GetMassParam2()
+		{
+			return massParam2;
 		}
 		/* マスの使用回数 */
 		public void SetMassUseNumber( int number)
@@ -129,7 +134,9 @@ namespace SugorokuGenerator
 		[SerializeField]
 		int massType;
 		[SerializeField]
-		float massParam;
+		int massParam1;
+		[SerializeField]
+		int massParam2;
 		[SerializeField]
 		int massUseNumber;
 		[SerializeField]

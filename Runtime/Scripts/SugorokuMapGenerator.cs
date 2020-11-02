@@ -69,7 +69,7 @@ namespace SugorokuGenerator
 				}
 				data.SetConnectionIndexList( indexList);
 				data.SetMassType( 0);
-				data.SetMassParam( 0f);
+				data.SetMassParam( 0, 0);
 				sugorokuPointDataList.Add( data);
 			}
 
